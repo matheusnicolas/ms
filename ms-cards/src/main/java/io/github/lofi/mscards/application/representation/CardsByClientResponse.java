@@ -14,7 +14,7 @@ public class CardsByClientResponse {
 
     private String name;
     private String company;
-    private BigDecimal limitApproved;
+    private BigDecimal approvedLimit;
 
     public static CardsByClientResponse fromModel(CardClient model) {
         return new CardsByClientResponse(
