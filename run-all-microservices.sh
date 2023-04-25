@@ -1,24 +1,26 @@
 #!/bin/bash
 
-cd /home/matheus/repositories/ms/eurekaserver
+filepath=`pwd`
+
+cd $filepath/eurekaserver
 ./mvnw spring-boot:run &
-sleep 2
+sleep 5
 
 cd ..
-cd /home/matheus/repositories/ms/ms-cards
+cd $filepath/ms-cards
 ./mvnw spring-boot:run &
-sleep 2
+sleep 5
 
 cd ..
-cd /home/matheus/repositories/ms/msclients
+cd $filepath/msclients
 ./mvnw spring-boot:run &
-sleep 2
+sleep 5
 
 cd ..
-cd /home/matheus/repositories/ms/ms-credit-appraiser
+cd /$filepath/ms-credit-appraiser
 ./mvnw spring-boot:run &
-sleep 2
+sleep 10
 
 cd ..
-cd /home/matheus/repositories/ms/ms-cloud-gateway
+cd $filepath/ms-cloud-gateway
 ./mvnw spring-boot:run
