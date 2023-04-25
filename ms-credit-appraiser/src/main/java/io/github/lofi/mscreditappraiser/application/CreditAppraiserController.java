@@ -1,12 +1,14 @@
 package io.github.lofi.mscreditappraiser.application;
 
+import io.github.lofi.mscreditappraiser.application.exception.ClientDataNotFoundException;
+import io.github.lofi.mscreditappraiser.application.exception.CommunicationErrorMicroservicesException;
+import io.github.lofi.mscreditappraiser.domain.model.ClientEvaluationResponse;
 import io.github.lofi.mscreditappraiser.domain.model.ClientSituation;
+import io.github.lofi.mscreditappraiser.domain.model.EvaluationData;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("credit-ratings")
@@ -21,8 +23,27 @@ public class CreditAppraiserController {
     }
 
     @GetMapping(value = "customer-situation", params = "cpf")
-    public ResponseEntity<ClientSituation> checkClientSituation(@RequestParam("cpf") String cpf) {
-        ClientSituation clientSituation = service.getClientSituation(cpf);
-        return ResponseEntity.ok(clientSituation);
+    public ResponseEntity checkClientSituation(@RequestParam("cpf") String cpf) {
+        try {
+            ClientSituation clientSituation = service.getClientSituation(cpf);
+            return ResponseEntity.ok(clientSituation);
+        } catch (ClientDataNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (CommunicationErrorMicroservicesException e) {
+            return ResponseEntity.status(HttpStatus.resolve(e.getStatus())).body(e.getMessage());
+        }
     }
+
+    @PostMapping
+    public ResponseEntity doEvaluation(@RequestBody EvaluationData data) {
+        try {
+            ClientEvaluationResponse clientEvaluationResponse = service.doEvaluation(data.getCpf(), data.getEarnings());
+            return ResponseEntity.ok(clientEvaluationResponse);
+        } catch (ClientDataNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (CommunicationErrorMicroservicesException e) {
+            return ResponseEntity.status(HttpStatus.resolve(e.getStatus())).body(e.getMessage());
+        }
+    }
+
 }
