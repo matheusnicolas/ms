@@ -8,5 +8,5 @@ import java.math.BigDecimal;
 public class CardClient {
     private String name;
     private String company;
-    private BigDecimal approvedLimit;
+    private BigDecimal cardLimit;
 }

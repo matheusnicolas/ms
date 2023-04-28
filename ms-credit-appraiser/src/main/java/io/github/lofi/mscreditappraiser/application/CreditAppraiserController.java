@@ -1,10 +1,10 @@
 package io.github.lofi.mscreditappraiser.application;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.lofi.mscreditappraiser.application.exception.ClientDataNotFoundException;
 import io.github.lofi.mscreditappraiser.application.exception.CommunicationErrorMicroservicesException;
-import io.github.lofi.mscreditappraiser.domain.model.ClientEvaluationResponse;
-import io.github.lofi.mscreditappraiser.domain.model.ClientSituation;
-import io.github.lofi.mscreditappraiser.domain.model.EvaluationData;
+import io.github.lofi.mscreditappraiser.application.exception.RequestCardErrorException;
+import io.github.lofi.mscreditappraiser.domain.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +43,16 @@ public class CreditAppraiserController {
             return ResponseEntity.notFound().build();
         } catch (CommunicationErrorMicroservicesException e) {
             return ResponseEntity.status(HttpStatus.resolve(e.getStatus())).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("cards-request")
+    public ResponseEntity requestCard(@RequestBody CardEmissionRequestData data) {
+        try {
+            RequestCardProtocol requestCardProtocol = service.requestCardEmission(data);
+            return ResponseEntity.ok(requestCardProtocol);
+        } catch (RequestCardErrorException e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 

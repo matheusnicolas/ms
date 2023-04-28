@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CardEmissionPublisher {
+public class CardEmissionRequestPublisher {
 
     private final RabbitTemplate rabbitTemplate;
     private final Queue queueCardEmission;

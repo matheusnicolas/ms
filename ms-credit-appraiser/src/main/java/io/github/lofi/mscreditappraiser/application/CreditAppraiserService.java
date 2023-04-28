@@ -1,12 +1,15 @@
 package io.github.lofi.mscreditappraiser.application;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import feign.FeignException;
 import io.github.lofi.mscreditappraiser.application.exception.ClientDataNotFoundException;
 import io.github.lofi.mscreditappraiser.application.exception.CommunicationErrorMicroservicesException;
+import io.github.lofi.mscreditappraiser.application.exception.RequestCardErrorException;
 import io.github.lofi.mscreditappraiser.domain.model.*;
 import io.github.lofi.mscreditappraiser.infra.clients.CardsResourceClient;
 import io.github.lofi.mscreditappraiser.infra.clients.ClientResourceClient;
+import io.github.lofi.mscreditappraiser.infra.mqueue.CardEmissionRequestPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +26,7 @@ public class CreditAppraiserService {
 
     private final ClientResourceClient clientsClient;
     private final CardsResourceClient cardsClient;
+    private final CardEmissionRequestPublisher cardEmissionRequestPublisher;
 
     public ClientSituation getClientSituation(String cpf)
             throws ClientDataNotFoundException, CommunicationErrorMicroservicesException {
@@ -84,8 +89,16 @@ public class CreditAppraiserService {
 
             throw new CommunicationErrorMicroservicesException(e.getMessage(), status);
         }
+    }
 
-
+    public RequestCardProtocol requestCardEmission(CardEmissionRequestData data) {
+        try {
+            cardEmissionRequestPublisher.requestCard(data);
+            var protocol = UUID.randomUUID().toString();
+            return new RequestCardProtocol(protocol);
+        } catch (Exception e) {
+            throw new RequestCardErrorException(e.getMessage());
+        }
     }
 }
 
