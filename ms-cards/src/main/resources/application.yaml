@@ -1,13 +1,8 @@
 spring:
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    show-sql: true
-
   application:
     name: ms-cards
-
   rabbitmq:
-    host: localhost
+    host: lofims-rabbitmq
     port: 5672
     username: guest
     password: guest
