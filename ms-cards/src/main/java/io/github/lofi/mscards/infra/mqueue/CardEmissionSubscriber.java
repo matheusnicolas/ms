@@ -8,12 +8,14 @@ import io.github.lofi.mscards.domain.CardEmissionRequestData;
 import io.github.lofi.mscards.infra.repository.CardClientRepository;
 import io.github.lofi.mscards.infra.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class CardEmissionSubscriber {
 
     private final CardRepository cardRepository;
@@ -35,6 +37,7 @@ public class CardEmissionSubscriber {
             cardClientRepository.save(cardClient);
 
         } catch (JsonProcessingException e) {
+            log.error("Error receiving card emission request: {}", e.getMessage());
             e.printStackTrace();
         }
     }
