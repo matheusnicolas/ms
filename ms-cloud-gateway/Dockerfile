@@ -7,6 +7,8 @@ FROM openjdk:17
 WORKDIR /app
 COPY --from=build ./app/target/*.jar ./app.jar
 
-ARG EUREKA_SERVER=localhost
+ARG RABBITMQ_SERVER=lofimsrabbitmq
+ARG KEYCLOARK_SERVER=localhost
+ARG KEYCLOARK_SERVER=8080
 
 ENTRYPOINT java -jar -Dspring.profiles.active=production app.jar
