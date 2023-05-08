@@ -4,7 +4,7 @@ This project contains a set of microservices that make up the Lofi-Credit system
 
 ## Architecture
 
-The Lofi-Credit system is built using a microservices architecture using the springframework cloud netflix eureka server, where each microservice is responsible for a specific aspect of the system's functionality. The microservices communicate with each other using REST APIs and message queues, and are deployed using Docker containers.
+The Lofi-Credit system is built using a microservices architecture using the spring boot and spring cloud, where each microservice is responsible for a specific aspect of the system's functionality. The microservices communicate with each other using REST APIs and message queues, and are deployed using Docker containers.
 
 The following microservices are included in the Lofi-Credit system:
 
